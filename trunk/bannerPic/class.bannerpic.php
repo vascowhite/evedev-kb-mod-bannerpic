@@ -20,10 +20,12 @@ class BannerPic
                 involved::load($kill_list);
                 $this->kill = $kill_list->getKill();
 		
+                //are we replacing the kb banner?
+                $bannerreplace = Config::get('mod_bannerpic_bannerreplace');
+		if($bannerreplace == 1) Config::set('style_banner', 'bannerpic.jpg');
+                
 		//if this is already cached we don't need to go any further..
 		if(Config::get('mod_bannerpic_nocache') == 1) $this->nocache = true;
-		$bannerreplace = Config::get('mod_bannerpic_bannerreplace');
-		if($bannerreplace == 1) Config::set('style_banner', 'bannerpic.jpg');
 		$this->cache = KB_CACHEDIR . '/data/bannerpic' . $this->kill->getID() . '.jpg';
 		
                 $basepic = Config::get('mod_bannerpic_basepic');
