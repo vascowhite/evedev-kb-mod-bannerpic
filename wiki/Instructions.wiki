@@ -42,7 +42,7 @@ Hopefully most are self explanatory, but here is a brief description in the orde
    * Left Edge
      As for picture Left Edge
    * Top Edge
-     As for picture Top Edge[/list]
+     As for picture Top Edge
    * Colours
      The RGB settings for the border around the portraits and the text colour
    * Font
