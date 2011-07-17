@@ -11,20 +11,20 @@ class BannerPic
 	private $nocache = false;
 	
 	public function __construct(){
-		
+		//get latest kill
 		$kill_list = new KillList();
 		$kill_list->setOrdered(true);
 		$kill_list->setOrderBy('kll_timestamp DESC');
+                $kill_list->setLimit(1);
 		$kill_list->setPodsNoobShips(Config::get('podnoobs'));
                 involved::load($kill_list);
                 $this->kill = $kill_list->getKill();
 		
 		//if this is already cached we don't need to go any further..
 		if(Config::get('mod_bannerpic_nocache') == 1) $this->nocache = true;
-		$bannerreplace = 0;
 		$bannerreplace = Config::get('mod_bannerpic_bannerreplace');
 		if($bannerreplace == 1) Config::set('style_banner', 'bannerpic.jpg');
-		$this->cache = KB_CACHEDIR . '/data/bannerpic' . $kll_id . '.jpg';
+		$this->cache = KB_CACHEDIR . '/data/bannerpic' . $this->kill->getID() . '.jpg';
 		
                 $basepic = Config::get('mod_bannerpic_basepic');
                 if(file_exists($basepic)) $this->basepic = $basepic;
@@ -35,10 +35,7 @@ class BannerPic
 			return;
 		}
                 
-		//open base picture
-		$this->img = imagecreatefromjpeg($this->basepic);
-		$red = imagecolorallocate($this->img, 255, 0, 0);
-		
+		//no kills?		
                 if($this->kill === null){
                     $killstr = "No kills yet - how sad!";
                     imagefttext($this->img, $this->lfont, 0, 20, 30, $red, $this->font, $killstr);
@@ -126,6 +123,10 @@ class BannerPic
 		$allistr = "Alliance : $victimalli";
 		$shipstr = "Ship : $victimshipname";
 		
+                //open base picture
+		$this->img = imagecreatefromjpeg($this->basepic);
+		$red = imagecolorallocate($this->img, 255, 0, 0);
+                
 		$black = imagecolorallocate($this->img, 0, 0, 0);
 		$textcol = imagecolorallocate($this->img, $textr, $textg, $textb);
 		$box=imagecreate(68,68);

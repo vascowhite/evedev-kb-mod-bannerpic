@@ -233,7 +233,7 @@ class banner
 		return $html;
 	}
 	
-function textCols(){
+        function textCols(){
 		$html = '';
 		$option = 'mod_bannerpic_text';
 		if(isset($_POST['option_' . $option . 'r'])){
