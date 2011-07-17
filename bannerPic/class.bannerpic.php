@@ -1,43 +1,23 @@
 <?php
-require_once 'common/includes/class.kill.php';
-require_once 'common/includes/class.pilot.php';
-require_once 'common/includes/class.corp.php';
-require_once 'common/includes/class.comments.php';
-require_once 'common/includes/class.db.php';
-require_once 'common/includes/class.killlist.php';
-
 class BannerPic
 {
 	private $basepic = 'mods/bannerPic/base.jpg';
 	private $img;
-	private $kill;
+	private $kill = null;
 	private $font = 'mods/bannerPic/evesansmm.ttf';
 	private $sfont = 12;
 	private $lfont = 25;
-	private $owner;
-	private $ownerid = array();
 	private $cache;
 	private $nocache = false;
-	private $html = '';
-        private $noKills = true;
 	
 	public function __construct(){
 		
 		$kill_list = new KillList();
 		$kill_list->setOrdered(true);
 		$kill_list->setOrderBy('kll_timestamp DESC');
-                //$kill_list->setLimit(1);
 		$kill_list->setPodsNoobShips(Config::get('podnoobs'));
                 involved::load($kill_list);
-                while($kill = $kill_list->getKill()){
-                    if($kill->getFBCorpID() == CORP_ID){
-                        $this->kill = $kill;
-                        $killername = $this->kill->getFBPilotName();
-                        $kll_id = $this->kill->getID();
-                        $this->noKills = false;
-                        break;
-                    }
-                }
+                $this->kill = $kill_list->getKill();
 		
 		//if this is already cached we don't need to go any further..
 		if(Config::get('mod_bannerpic_nocache') == 1) $this->nocache = true;
@@ -46,7 +26,8 @@ class BannerPic
 		if($bannerreplace == 1) Config::set('style_banner', 'bannerpic.jpg');
 		$this->cache = KB_CACHEDIR . '/data/bannerpic' . $kll_id . '.jpg';
 		
-                $this->basepic = Config::get('mod_bannerpic_basepic');
+                $basepic = Config::get('mod_bannerpic_basepic');
+                if(file_exists($basepic)) $this->basepic = $basepic;
                 
 		if(file_exists($this->cache) && !$this->nocache){
 			$this->img = imagecreatefromjpeg($this->cache);
@@ -54,12 +35,11 @@ class BannerPic
 			return;
 		}
                 
-		
 		//open base picture
 		$this->img = imagecreatefromjpeg($this->basepic);
 		$red = imagecolorallocate($this->img, 255, 0, 0);
 		
-                if($this->noKills){
+                if($this->kill === null){
                     $killstr = "No kills yet - how sad!";
                     imagefttext($this->img, $this->lfont, 0, 20, 30, $red, $this->font, $killstr);
                     imagejpeg($this->img);
@@ -67,23 +47,21 @@ class BannerPic
                     return;
                 }
                 
-		
+		//killer
+                $killername = $this->kill->getFBPilotName();
+                
 		//get victim info
-		$victimname = $this->kill->getVictimName();
+                $victimid = $this->kill->getVictimID();
+                $victimname = $this->kill->getVictimName();
 		$victimcorp = $this->kill->getVictimCorpName();
 		$victimalli = $this->kill->getVictimAllianceName();
-		$victimid = $this->kill->getVictimID();
-		$victim = new Pilot($victimid);
-		$victim->exists();
-		$victimid = $victim->getExternalID();
 		
 		//get the 64 x 64 victim portrait;
 		$victimgfile = 'http://image.eveonline.com/Character/' . $victimid . '_64.jpg';
 		$victimimg = imagecreatefromjpeg($victimgfile);
 		
-		$victimship = $this->kill->getVictimShip();
-		$victimshipname = $victimship->getName();
-		$url = 'http://image.eveonline.com/InventoryType/' . $victimship->getExternalID() . '_64.png'; 	
+		$victimshipname = $this->kill->getVictimShipName();
+		$url = 'http://image.eveonline.com/InventoryType/' . $this->kill->getVictimShipExternalID() . '_64.png'; 	
 		$victimshipimg = imagecreatefrompng($url);
 
 		//set variables for positions
