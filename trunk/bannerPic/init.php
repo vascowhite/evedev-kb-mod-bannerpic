@@ -1,4 +1,9 @@
 <?php
+$modInfo['bannerPic']['name'] = "bannerPic by vasco di (V2.0)";
+$modInfo['bannerPic']['abstract'] = "Puts latest kill into kb and/or forum banner.";
+$modInfo['bannerPic']['about'] = "<a href='http://eve-id.net/forum/viewtopic.php?f=505&t=17007'>EveDev forum page</a><br>";
+$modInfo['bannerPic']['about'] .= "<a href='http://code.google.com/p/evedev-kb-mod-bannerpic/'>Google Code</a>";
+
 include_once 'class.bannerpic.php';
 event::register('home_assembling', 'banner::replace');
 
@@ -254,6 +259,7 @@ function textCols(){
 		$html = '';
 		$basepic = Config::get('mod_bannerpic_basepic');
 		$html = "<img src='?a=bannerPic' width='100%' />";
+                $html .= "<p><a href='". KB_HOST . "/?a=bannerPic'>URL of banner for forums</a></p>";
 		return $html;
 	}
 	
