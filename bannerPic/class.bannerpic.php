@@ -50,18 +50,18 @@ class BannerPic
                 $killername = $this->kill->getFBPilotName();
                 
 		//get victim info
-                $victimid = $this->kill->getVictimID();
+                $victimid = $this->kill->getVictimExternalID();
                 $victimname = $this->kill->getVictimName();
 		$victimcorp = $this->kill->getVictimCorpName();
 		$victimalli = $this->kill->getVictimAllianceName();
 		
 		//get the 64 x 64 victim portrait;
-		$victimgfile = 'http://image.eveonline.com/Character/' . $victimid . '_64.jpg';
+		$victimgfile = KB_HOST . '/?a=thumb&id=' . $victimid . '&size=64';
 		$victimimg = imagecreatefromjpeg($victimgfile);
 		
 		$victimshipname = $this->kill->getVictimShipName();
-		$url = 'http://image.eveonline.com/InventoryType/' . $this->kill->getVictimShipExternalID() . '_64.png'; 	
-		$victimshipimg = imagecreatefrompng($url);
+		$url = KB_HOST . '/?a=thumb&id=' . $this->kill->getVictimShipExternalID() . '&size=64'; 	
+		$victimshipimg = imagecreatefromjpeg($url);
 
 		//set variables for positions
 		//Config::get('mod_bannerpic_basepic') == null ? Config::set('mod_bannerpic_basepic', $this->basepic) : $this->basepic = Config::get('mod_bannerpic_basepic');
