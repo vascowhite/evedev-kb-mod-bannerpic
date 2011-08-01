@@ -1,5 +1,5 @@
 <?php
-$modInfo['bannerPic']['name'] = "bannerPic by vasco di (V2.0)";
+$modInfo['bannerPic']['name'] = "bannerPic by vasco di (V2.01)";
 $modInfo['bannerPic']['abstract'] = "Puts latest kill into kb and/or forum banner.";
 $modInfo['bannerPic']['about'] = "<a href='http://eve-id.net/forum/viewtopic.php?f=505&t=17007'>EveDev forum page</a><br>";
 $modInfo['bannerPic']['about'] .= "<a href='http://code.google.com/p/evedev-kb-mod-bannerpic/'>Google Code</a>";
